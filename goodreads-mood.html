@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goodreads | Meet your next favorite book</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f8f7f4;
+            color: #3a3c35;
+            line-height: 1.5;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Merriweather', serif;
+            color: #3a3c35;
+        }
+        a {
+            text-decoration: none;
+            color: #3d634e;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        img {
+            max-width: 100%;
+        }
+        header {
+            background-color: #f8f7f4;
+            border-bottom: 1px solid #ded9c3;
+            padding: 10px 0;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .logo img {
+            height: 45px;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li {
+            margin-left: 20px;
+            position: relative;
+        }
+        .nav-menu li a {
+            color: #382110;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .nav-menu li a:hover {
+            color: #3d634e;
+        }
+        .nav-menu li.has-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #ded9c3;
+            border-radius: 3px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            min-width: 180px;
+            padding: 10px 0;
+        }
+        .dropdown-menu li {
+            margin: 0;
+        }
+        .dropdown-menu li a {
+            display: block;
+            padding: 8px 15px;
+            font-weight: normal;
+            color: #382110;
+        }
+        .dropdown-menu li a:hover {
+            background-color: #f4f1ea;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+        .search-bar input {
+            padding: 8px 12px;
+            border: 1px solid #ded9c3;
+            border-radius: 3px 0 0 3px;
+            width: 250px;
+        }
+        .search-bar button {
+            background-color: #3d634e;
+            color: white;
+            border: 1px solid #3d634e;
+            border-radius: 0 3px 3px 0;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .search-bar button:hover {
+            background-color: #2e4f3d;
+        }
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .auth-buttons a {
+            padding: 8px 12px;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .auth-buttons a.sign-in {
+            color: #3d634e;
+        }
+        .auth-buttons a.join {
+            background-color: #3d634e;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+        .page-heading {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #3a3c35;
+        }
+        .main-content {
+            display: flex;
+            gap: 30px;
+        }
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+        }
+        .content-area {
+            flex-grow: 1;
+        }
+        .filters {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: #f4f1ea;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .filters h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        .filter-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #ded9c3;
+            border-radius: 3px;
+            background-color: white;
+            width: 100%;
+        }
+        .mood-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .mood-tag {
+            position: relative;
+            background-color: #f4f1ea;
+            color: #3a3c35;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #ded9c3;
+        }
+        .mood-tag:hover {
+            background-color: #e6e0d2;
+        }
+        .mood-tag.active {
+            background-color: #3d634e;
+            color: white;
+            border-color: #3d634e;
+        }
+        .mood-tag::after {
+            content: attr(data-description);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3a3c35;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            white-space: nowrap;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 10;
+        }
+        .mood-tag:hover::after {
+            visibility: visible;
+            opacity: 1;
+        }
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ded9c3;
+        }
+        .results-count {
+            font-size: 14px;
+            color: #666;
+        }
+        .sort-options {
+            display: flex;
+            align-items: center;
+        }
+        .sort-options label {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        .sort-options select {
+            padding: 5px 8px;
+            border: 1px solid #ded9c3;
+            border-radius: 3px;
+            background-color: white;
+        }
+        .book-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .book-card {
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            display: flex;
+            padding: 15px;
+            border: 1px solid #ded9c3;
+        }
+        .book-card:hover {
+            transform: translateY(-3px);
+        }
+        .book-cover {
+            width: 100px;
+            min-width: 100px;
+            height: 150px;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .book-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .book-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #3d634e;
+        }
+        .book-author {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .book-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .stars {
+            display: flex;
+            margin-right: 8px;
+        }
+        .star {
+            color: #d1ac59;
+            font-size: 16px;
+        }
+        .rating-count {
+            font-size: 12px;
+            color: #666;
+        }
+        .book-published {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .book-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+        .book-actions button {
+            padding: 8px 12px;
+            border: 1px solid #ded9c3;
+            border-radius: 3px;
+            background-color: #f4f1ea;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .book-actions button.primary {
+            background-color: #3d634e;
+            color: white;
+            border-color: #3d634e;
+        }
+        .book-actions button:hover {
+            background-color: #e7e2d3;
+        }
+        .book-actions button.primary:hover {
+            background-color: #2e4f3d;
+        }
+        .book-moods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .book-mood {
+            position: relative;
+            background-color: #f4f1ea;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            color: #3a3c35;
+            border: 1px solid #ded9c3;
+            cursor: pointer;
+        }
+        .book-mood:hover {
+            background-color: #e6e0d2;
+        }
+        .book-mood.matching {
+            background-color: #d1f1e8;
+            border-color: #3d634e;
+        }
+        .mood-tooltip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .similar-moods {
+            margin-top: 30px;
+            background-color: #f4f1ea;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .similar-moods h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .similar-books {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .similar-book {
+            min-width: 100px;
+            max-width: 100px;
+        }
+        .similar-book-cover {
+            height: 150px;
+            width: 100px;
+            overflow: hidden;
+            border-radius: 3px;
+            margin-bottom: 5px;
+        }
+        .similar-book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .similar-book-title {
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .active-mood-indicator {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #e6f3ed;
+            border: 1px solid #3d634e;
+            border-radius: 5px;
+            display: none;
+        }
+        .active-mood-indicator p {
+            margin: 0;
+            font-size: 14px;
+        }
+        .active-mood-indicator strong {
+            color: #3d634e;
+        }
+        .mood-clear-btn {
+            background: none;
+            border: none;
+            color: #3d634e;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .related-shelves {
+            margin-top: 25px;
+            background-color: #f4f1ea;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .related-shelves h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .shelf-list {
+            list-style: none;
+        }
+        .shelf-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2dbd0;
+        }
+        .shelf-item:last-child {
+            border-bottom: none;
+        }
+        .shelf-name {
+            color: #3d634e;
+        }
+        .shelf-count {
+            color: #666;
+            font-size: 12px;
+        }
+        footer {
+            background-color: #f4f1ea;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid #ded9c3;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .footer-section h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .footer-links {
+            list-style: none;
+        }
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #666;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 5px;
+        }
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ded9c3;
+            background-color: white;
+            cursor: pointer;
+        }
+        .pagination button.active {
+            background-color: #3d634e;
+            color: white;
+            border-color: #3d634e;
+        }
+        .pagination button:hover:not(.active) {
+            background-color: #f4f1ea;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+        .empty-state p {
+            margin-bottom: 20px;
+        }
+        .empty-state button {
+            padding: 10px 15px;
+            background-color: #3d634e;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="https://ext.same-assets.com/2726678950/1737793894.png" alt="Goodreads">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">My Books</a></li>
+                <li class="has-dropdown">
+                    <a href="#">Browse ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Recommendations</a></li>
+                        <li><a href="#">Choice Awards</a></li>
+                        <li><a href="#">Genres</a></li>
+                        <li><a href="#">Giveaways</a></li>
+                        <li><a href="#">New Releases</a></li>
+                        <li><a href="#">Lists</a></li>
+                        <li><a href="#">Explore</a></li>
+                        <li><a href="#">News & Interviews</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <a href="#">Community ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Groups</a></li>
+                        <li><a href="#">Quotes</a></li>
+                        <li><a href="#">Ask the Author</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="search-bar">
+                <input type="text" placeholder="Search books">
+                <button>Search</button>
+            </div>
+            <div class="auth-buttons">
+                <a href="#" class="sign-in">Sign In</a>
+                <a href="#" class="join">Join</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1 class="page-heading">Search Results</h1>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="filters">
+                    <h2>Refine Results</h2>
+                    <div class="filter-group">
+                        <label for="genre">Genre</label>
+                        <select id="genre">
+                            <option value="all">All Genres</option>
+                            <option value="fantasy">Fantasy</option>
+                            <option value="science-fiction">Science Fiction</option>
+                            <option value="mystery">Mystery</option>
+                            <option value="romance">Romance</option>
+                            <option value="thriller">Thriller</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="rating">Minimum Rating</label>
+                        <select id="rating">
+                            <option value="0">Any Rating</option>
+                            <option value="3">3+ Stars</option>
+                            <option value="4">4+ Stars</option>
+                            <option value="4.5">4.5+ Stars</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="published">Published</label>
+                        <select id="published">
+                            <option value="all">Any Year</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2010-2019">2010-2019</option>
+                            <option value="2000-2009">2000-2009</option>
+                            <option value="before-2000">Before 2000</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="mood">Book Mood</label>
+                        <div class="mood-filter">
+                            <!-- Mood tags will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="related-shelves">
+                    <h2>Related Shelves</h2>
+                    <ul class="shelf-list">
+                        <li class="shelf-item">
+                            <a href="#" class="shelf-name">fiction</a>
+                            <span class="shelf-count">(29,172,857)</span>
+                        </li>
+                        <li class="shelf-item">
+                            <a href="#" class="shelf-name">fantasy</a>
+                            <span class="shelf-count">(26,584,986)</span>
+                        </li>
+                        <li class="shelf-item">
+                            <a href="#" class="shelf-name">romance</a>
+                            <span class="shelf-count">(20,900,347)</span>
+                        </li>
+                        <li class="shelf-item">
+                            <a href="#" class="shelf-name">mystery</a>
+                            <span class="shelf-count">(10,020,859)</span>
+                        </li>
+                        <li class="shelf-item">
+                            <a href="#" class="shelf-name">thriller</a>
+                            <span class="shelf-count">(4,987,909)</span>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+            <div class="content-area">
+                <div class="results-header">
+                    <div class="results-count">
+                        <span id="results-number">12</span> books found
+                    </div>
+                    <div class="sort-options">
+                        <label for="sort">Sort by:</label>
+                        <select id="sort">
+                            <option value="relevance">Relevance</option>
+                            <option value="rating">Average Rating</option>
+                            <option value="date">Publication Date</option>
+                            <option value="title">Title</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="active-mood-indicator" id="mood-indicator">
+                    <p>Showing books matching mood: <strong id="active-mood-text"></strong>
+                    <button class="mood-clear-btn" id="mood-clear">Clear mood filter</button></p>
+                </div>
+                <section class="book-list">
+                    <!-- Book cards will be inserted here by JavaScript -->
+                </section>
+                <div id="empty-results" class="empty-state" style="display: none;">
+                    <p>No books match your selected mood filters.</p>
+                    <button id="clear-filters">Clear Filters</button>
+                </div>
+                <div class="similar-moods" id="similar-moods-section">
+                    <h2>Books with Similar Mood</h2>
+                    <div class="similar-books" id="similar-books">
+                        <!-- Similar books will be added here -->
+                    </div>
+                </div>
+                <div class="pagination">
+                    <button>Previous</button>
+                    <button class="active">1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button>Next</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul class="footer-links">
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Terms</a></li>
+                    <li><a href="#">Privacy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Work with us</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Authors</a></li>
+                    <li><a href="#">Advertise</a></li>
+                    <li><a href="#">Authors & ads blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Goodreads, Inc.</p>
+        </div>
+    </footer>
+    <script>
+        // Mock book data with mood tags
+        const books = [
+            {
+                id: 1,
+                title: "The Midnight Library",
+                author: "Matt Haig",
+                cover: "https://ext.same-assets.com/2083850853/2321015836.jpeg",
+                rating: 4.2,
+                ratings_count: 1243067,
+                published: "2020",
+                moods: ["Thought-Provoking", "Uplifting", "Bittersweet"]
+            },
+            {
+                id: 2,
+                title: "The House in the Cerulean Sea",
+                author: "TJ Klune",
+                cover: "https://ext.same-assets.com/2083850853/3950476503.jpeg",
+                rating: 4.5,
+                ratings_count: 352803,
+                published: "2020",
+                moods: ["Uplifting", "Funny", "Heartwarming"]
+            },
+            {
+                id: 3,
+                title: "The Silent Patient",
+                author: "Alex Michaelides",
+                cover: "https://ext.same-assets.com/2083850853/2240002375.jpeg",
+                rating: 4.1,
+                ratings_count: 583201,
+                published: "2019",
+                moods: ["Mysterious", "Suspenseful", "Dark"]
+            },
+            {
+                id: 4,
+                title: "Verity",
+                author: "Colleen Hoover",
+                cover: "https://ext.same-assets.com/2083850853/1995718074.jpeg",
+                rating: 4.3,
+                ratings_count: 421504,
+                published: "2018",
+                moods: ["Suspenseful", "Mysterious", "Dark"]
+            },
+            {
+                id: 5,
+                title: "The Night Circus",
+                author: "Erin Morgenstern",
+                cover: "https://ext.same-assets.com/2083850853/99537053.jpeg",
+                rating: 4.0,
+                ratings_count: 876402,
+                published: "2011",
+                moods: ["Mysterious", "Bittersweet", "Atmospheric"]
+            },
+            {
+                id: 6,
+                title: "A Man Called Ove",
+                author: "Fredrik Backman",
+                cover: "https://ext.same-assets.com/2083850853/2559182158.jpeg",
+                rating: 4.4,
+                ratings_count: 923107,
+                published: "2012",
+                moods: ["Uplifting", "Funny", "Bittersweet", "Heartwarming"]
+            },
+            {
+                id: 7,
+                title: "Where the Crawdads Sing",
+                author: "Delia Owens",
+                cover: "https://ext.same-assets.com/2083850853/1982167041.jpeg",
+                rating: 4.6,
+                ratings_count: 1034508,
+                published: "2018",
+                moods: ["Bittersweet", "Atmospheric", "Thought-Provoking"]
+            },
+            {
+                id: 8,
+                title: "The Invisible Life of Addie LaRue",
+                author: "V.E. Schwab",
+                cover: "https://ext.same-assets.com/2083850853/1727195557.jpeg",
+                rating: 4.2,
+                ratings_count: 682507,
+                published: "2020",
+                moods: ["Thought-Provoking", "Bittersweet", "Atmospheric"]
+            },
+            {
+                id: 9,
+                title: "Project Hail Mary",
+                author: "Andy Weir",
+                cover: "https://ext.same-assets.com/2083850853/1982167041.jpeg",
+                rating: 4.5,
+                ratings_count: 489365,
+                published: "2021",
+                moods: ["Suspenseful", "Thought-Provoking", "Uplifting"]
+            },
+            {
+                id: 10,
+                title: "The Seven Husbands of Evelyn Hugo",
+                author: "Taylor Jenkins Reid",
+                cover: "https://ext.same-assets.com/2083850853/2559182158.jpeg",
+                rating: 4.3,
+                ratings_count: 1056723,
+                published: "2017",
+                moods: ["Bittersweet", "Heartwarming", "Thought-Provoking"]
+            },
+            {
+                id: 11,
+                title: "Mexican Gothic",
+                author: "Silvia Moreno-Garcia",
+                cover: "https://ext.same-assets.com/2083850853/99537053.jpeg",
+                rating: 3.7,
+                ratings_count: 289756,
+                published: "2020",
+                moods: ["Dark", "Mysterious", "Atmospheric"]
+            },
+            {
+                id: 12,
+                title: "Educated",
+                author: "Tara Westover",
+                cover: "https://ext.same-assets.com/2083850853/2321015836.jpeg",
+                rating: 4.5,
+                ratings_count: 984567,
+                published: "2018",
+                moods: ["Thought-Provoking", "Inspiring", "Bittersweet"]
+            }
+        ];
+
+        // All available moods
+        const allMoods = [
+            { name: "Uplifting", description: "Feel-good, inspiring stories" },
+            { name: "Suspenseful", description: "Tense, thrilling narratives" },
+            { name: "Thought-Provoking", description: "Contemplative, philosophical reads" },
+            { name: "Funny", description: "Humor-filled, light-hearted books" },
+            { name: "Bittersweet", description: "Poignant stories with mixed emotions" },
+            { name: "Mysterious", description: "Books with secrets and suspense" },
+            { name: "Dark", description: "Gloomy, gritty, or haunting stories" },
+            { name: "Atmospheric", description: "Rich, immersive world-building" },
+            { name: "Heartwarming", description: "Emotionally satisfying, tender stories" },
+            { name: "Inspiring", description: "Motivational, encouraging narratives" }
+        ];
+
+        // Initialize mood tags in the sidebar
+        function initializeMoodTags() {
+            const moodFilterContainer = document.querySelector('.mood-filter');
+            moodFilterContainer.innerHTML = '';
+
+            allMoods.forEach(mood => {
+                const moodTag = document.createElement('span');
+                moodTag.className = 'mood-tag';
+                moodTag.textContent = mood.name;
+                moodTag.setAttribute('data-description', mood.description);
+                moodFilterContainer.appendChild(moodTag);
+            });
+        }
+
+        // Initialize the page
+        initializeMoodTags();
+
+        // Function to generate star rating HTML
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+            let starsHTML = '';
+
+            // Full stars
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<span class="star">★</span>';
+            }
+
+            // Half star
+            if (halfStar) {
+                starsHTML += '<span class="star">½</span>';
+            }
+
+            // Empty stars
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<span class="star">☆</span>';
+            }
+
+            return starsHTML;
+        }
+
+        // Book Mood filtering state
+        let activeMoods = [];
+
+        // Function to render book cards
+        function renderBooks(booksToRender) {
+            const bookListContainer = document.querySelector('.book-list');
+            const emptyState = document.getElementById('empty-results');
+            const resultsNumber = document.getElementById('results-number');
+            const moodIndicator = document.getElementById('mood-indicator');
+            const activeMoodText = document.getElementById('active-mood-text');
+            const similarMoodsSection = document.getElementById('similar-moods-section');
+
+            bookListContainer.innerHTML = '';
+            resultsNumber.textContent = booksToRender.length;
+
+            // Show/hide mood indicator
+            if (activeMoods.length === 1) {
+                moodIndicator.style.display = 'block';
+                activeMoodText.textContent = activeMoods[0];
+
+                // Show similar mood books section only when one mood is selected
+                similarMoodsSection.style.display = 'block';
+                renderSimilarMoodBooks(activeMoods[0]);
+            } else {
+                moodIndicator.style.display = 'none';
+                similarMoodsSection.style.display = 'none';
+            }
+
+            if (booksToRender.length === 0) {
+                bookListContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            bookListContainer.style.display = 'flex';
+            emptyState.style.display = 'none';
+
+            booksToRender.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+
+                const moodsHTML = book.moods.map(mood => {
+                    const isMatching = activeMoods.includes(mood);
+                    return `<span class="book-mood ${isMatching ? 'matching' : ''}" data-mood="${mood}">${mood}</span>`;
+                }).join('');
+
+                bookCard.innerHTML = `
+                    <div class="book-cover">
+                        <img src="${book.cover}" alt="${book.title}">
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">${book.title}</h3>
+                        <p class="book-author">by ${book.author}</p>
+                        <div class="book-rating">
+                            <div class="stars">${generateStars(book.rating)}</div>
+                            <span class="rating-count">${book.rating} (${book.ratings_count.toLocaleString()})</span>
+                        </div>
+                        <p class="book-published">Published: ${book.published}</p>
+                        <div class="book-moods">
+                            ${moodsHTML}
+                        </div>
+                        <div class="book-actions">
+                            <button class="primary">Want to Read</button>
+                            <button>Get a Copy</button>
+                        </div>
+                    </div>
+                `;
+
+                bookListContainer.appendChild(bookCard);
+            });
+
+            // Add event listeners to mood tags in book cards
+            document.querySelectorAll('.book-mood').forEach(moodTag => {
+                moodTag.addEventListener('click', () => {
+                    const mood = moodTag.dataset.mood;
+
+                    // Clear existing mood selections
+                    document.querySelectorAll('.mood-tag').forEach(tag => {
+                        tag.classList.remove('active');
+                    });
+                    activeMoods = [];
+
+                    // Add the clicked mood
+                    document.querySelectorAll(`.mood-tag`).forEach(tag => {
+                        if (tag.textContent === mood) {
+                            tag.classList.add('active');
+                        }
+                    });
+                    activeMoods = [mood];
+
+                    // Apply filters
+                    filterBooks();
+                });
+            });
+        }
+
+        // Function to render similar mood books
+        function renderSimilarMoodBooks(mood) {
+            const similarBooksContainer = document.getElementById('similar-books');
+            similarBooksContainer.innerHTML = '';
+
+            // Find books with the selected mood
+            const booksWithMood = books.filter(book => book.moods.includes(mood));
+
+            // Display a subset of the books (up to 5)
+            const booksToShow = booksWithMood.slice(0, 5);
+
+            booksToShow.forEach(book => {
+                const bookElement = document.createElement('div');
+                bookElement.className = 'similar-book';
+
+                bookElement.innerHTML = `
+                    <div class="similar-book-cover">
+                        <img src="${book.cover}" alt="${book.title}">
+                    </div>
+                    <div class="similar-book-title" title="${book.title}">${book.title}</div>
+                `;
+
+                similarBooksContainer.appendChild(bookElement);
+            });
+        }
+
+        // Genre filter functionality
+        const genreSelect = document.getElementById('genre');
+        genreSelect.addEventListener('change', filterBooks);
+
+        // Rating filter functionality
+        const ratingSelect = document.getElementById('rating');
+        ratingSelect.addEventListener('change', filterBooks);
+
+        // Published year filter
+        const publishedSelect = document.getElementById('published');
+        publishedSelect.addEventListener('change', filterBooks);
+
+        // Sort functionality
+        const sortSelect = document.getElementById('sort');
+        sortSelect.addEventListener('change', filterBooks);
+
+        // Clear filters button
+        document.getElementById('clear-filters').addEventListener('click', () => {
+            genreSelect.value = 'all';
+            ratingSelect.value = '0';
+            publishedSelect.value = 'all';
+            sortSelect.value = 'relevance';
+            document.querySelectorAll('.mood-tag').forEach(tag => tag.classList.remove('active'));
+            activeMoods = [];
+            renderBooks(books);
+        });
+
+        // Book Mood filtering functionality - update to use dynamically added tags
+        document.querySelector('.mood-filter').addEventListener('click', function(e) {
+            if (e.target.classList.contains('mood-tag')) {
+                const mood = e.target.textContent;
+
+                // Toggle mood selection
+                if (e.target.classList.contains('active')) {
+                    e.target.classList.remove('active');
+                    activeMoods = activeMoods.filter(m => m !== mood);
+                } else {
+                    e.target.classList.add('active');
+                    activeMoods.push(mood);
+                }
+
+                // Apply all filters
+                filterBooks();
+            }
+        });
+
+        // Clear mood filter button
+        document.getElementById('mood-clear').addEventListener('click', () => {
+            document.querySelectorAll('.mood-tag').forEach(tag => tag.classList.remove('active'));
+            activeMoods = [];
+            filterBooks();
+        });
+
+        // Combined filter function
+        function filterBooks() {
+            let filteredBooks = [...books];
+
+            // Genre filter
+            const selectedGenre = genreSelect.value;
+            if (selectedGenre !== 'all') {
+                // In a real implementation, we would filter by genre
+                // For this mock, we're not implementing full genre filtering
+            }
+
+            // Rating filter
+            const minRating = parseFloat(ratingSelect.value);
+            if (minRating > 0) {
+                filteredBooks = filteredBooks.filter(book => book.rating >= minRating);
+            }
+
+            // Published year filter
+            const publishedYear = publishedSelect.value;
+            if (publishedYear !== 'all') {
+                if (publishedYear === '2010-2019') {
+                    filteredBooks = filteredBooks.filter(book => {
+                        const year = parseInt(book.published);
+                        return year >= 2010 && year <= 2019;
+                    });
+                } else if (publishedYear === '2000-2009') {
+                    filteredBooks = filteredBooks.filter(book => {
+                        const year = parseInt(book.published);
+                        return year >= 2000 && year <= 2009;
+                    });
+                } else if (publishedYear === 'before-2000') {
+                    filteredBooks = filteredBooks.filter(book => {
+                        const year = parseInt(book.published);
+                        return year < 2000;
+                    });
+                } else {
+                    filteredBooks = filteredBooks.filter(book => book.published === publishedYear);
+                }
+            }
+
+            // Mood filter
+            if (activeMoods.length > 0) {
+                filteredBooks = filteredBooks.filter(book =>
+                    book.moods.some(mood => activeMoods.includes(mood))
+                );
+            }
+
+            // Apply sorting
+            const sortBy = sortSelect.value;
+            if (sortBy === 'rating') {
+                filteredBooks.sort((a, b) => b.rating - a.rating);
+            } else if (sortBy === 'date') {
+                filteredBooks.sort((a, b) => parseInt(b.published) - parseInt(a.published));
+            } else if (sortBy === 'title') {
+                filteredBooks.sort((a, b) => a.title.localeCompare(b.title));
+            }
+
+            renderBooks(filteredBooks);
+        }
+
+        // Show all books initially
+        renderBooks(books);
+    </script>
+</body>
+</html>
